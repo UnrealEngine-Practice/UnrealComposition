@@ -30,7 +30,7 @@ void UMyGameInstance::Init()
 		const UEnum* CardEnumType =  FindObject<UEnum>(nullptr, TEXT("/Script/UnrealComposition.ECardType"));
 		if (CardEnumType != nullptr)
 		{
-			FString CardMetaData = CardEnumType->GetDisplayNameTextByValue((int64)CardType).ToString();
+			FString CardMetaData = CardEnumType->GetDisplayNameTextByValue(static_cast<int64>(CardType)).ToString();
 			UE_LOG(LogTemp, Log, TEXT("%s님이 소유한 카드는 %s"), *Person->GetName(), *CardMetaData);
 		}
 	}
