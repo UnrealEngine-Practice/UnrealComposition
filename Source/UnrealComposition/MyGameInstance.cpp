@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MyGameInstance.h"
+
+#include "Card.h"
 #include "Student.h"
 #include "Staff.h"
 #include "Teacher.h"
@@ -19,23 +21,17 @@ void UMyGameInstance::Init()
 	TArray<UPerson*> Persons = { NewObject<UStudent>(), NewObject<UTeacher>(), NewObject<UStaff>()};
 
 	UE_LOG(LogTemp, Log, TEXT("============================================"));
-	UE_LOG(LogTemp, Log, TEXT("학교 이름 % s"), *this->SchoolName);
-	for (const auto Person : Persons)
+	for (const auto Person: Persons)
 	{
-		UE_LOG(LogTemp, Log, TEXT("구성원 이름 %s"), *Person->GetName());
-	}
-	UE_LOG(LogTemp, Log, TEXT("============================================"));
+		const UCard* OwnCard = Person->GetCard();
+		check(OwnCard);
+		ECardType CardType = OwnCard->GetCardType();
 
-	for (auto Person : Persons)
-	{
-		ILessonInterface* LessonInterface = Cast<ILessonInterface>(Person);
-		if (LessonInterface == nullptr)
+		const UEnum* CardEnumType =  FindObject<UEnum>(nullptr, TEXT("/Script/UnrealComposition.ECardType"));
+		if (CardEnumType != nullptr)
 		{
-			UE_LOG(LogTemp, Log, TEXT("%s님은 수업에 참여할 수 없습니다."), *Person->GetName());
-		}
-		else
-		{
-			LessonInterface->DoLesson();
+			FString CardMetaData = CardEnumType->GetDisplayNameTextByValue((int64)CardType).ToString();
+			UE_LOG(LogTemp, Log, TEXT("%s님이 소유한 카드는 %s"), *Person->GetName(), *CardMetaData);
 		}
 	}
 }
